@@ -1,0 +1,655 @@
+/* ========== GLOBAL ========== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Georgia', serif; overflow: hidden; transition: all 0.3s ease; color: #111; }
+body.dark-mode { background: #000; color: #fff;}
+.page { display: none; width: 100vw; height: 100vh; position: relative; }
+.page.active { display: block; }
+
+/* ============================================================
+   PAGE 1: LIBRARY
+============================================================ */
+/* --- LIBRARY: BACKGROUND --- */
+.library-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('./images/bcp.jpg') center/cover no-repeat;
+z-index: -2; transition: filter 0.3s ease; filter: blur(2px) brightness(1.1); }
+body.dark-mode .library-bg { filter: blur(1px) brightness(0.4) grayscale(0.1);}
+.bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8);
+z-index: -1; transition: background 0.3s ease; }
+body.dark-mode .bg-overlay { background: rgba(0, 0, 0, 0);}
+
+/* ------------------------------------------------------------
+    LIB: HEADER
+------------------------------------------------------------ */
+.title { text-align: center; padding: 30px; font-size: 56px; letter-spacing: 4px; transition: color 0.3s ease; font-weight: 900; }
+.library-search { position:absolute; top:40px; right:35px; display:flex; align-items:center; gap:5px; z-index:1000; }
+.search-toggle { background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.search-icon-img { width:52px; height:52px; transition:all .25s ease; user-select:none; pointer-events:none; }
+.search-toggle:hover .search-icon-img { transform:scale(1.10) translateY(-2px);
+filter: drop-shadow(0 6px 12px rgba(0,0,0,.35)) drop-shadow(0 0 8px rgba(255,255,255,.25)); }
+.search-toggle:active .search-icon-img { transform:scale(.96); }
+.search-box { width:0; overflow:hidden; opacity:0; transition: width .35s ease, opacity .25s ease; }
+.search-box input { width:220px; height:42px; border-radius:30px; border:1px solid rgba(255,255,255,.35);
+background:rgba(250,250,248,.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+box-shadow: 0 6px 18px rgba(0,0,0,.08); outline:none; padding:0 18px; font-size:15px; }
+.library-search.active .search-box { width:230px; opacity:1; }
+
+/* ------------------------------------------------------------
+    LIBRARY: BOOKS SECTION (4 Books)
+------------------------------------------------------------ */
+.book-container { display: flex; justify-content: center; gap: 60px; padding: 40px 20px; }
+.book-item { transition: all 0.2s ease; cursor: pointer; }
+.book-item img { width: 240px; height: 340px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+object-fit: cover; transition: transform 0.2s ease, width 0.3s ease, height 0.3s ease; }
+.book-item:hover img { transform: scale(1.05); }
+.book-item:active img { transform: scale(0.95); }
+.book-item p { margin-top: 15px; text-align: center; font-weight: bold; font-size: 17px; transition: all 0.3s ease; }
+
+/* ------------------------------------------------------------
+    LIB: FOOTER
+------------------------------------------------------------ */
+/* ---------- LIBRARY: CONTROLS WRAPPER ---------- */
+.controls-wrapper { display: flex; justify-content: space-between; align-items: flex-end; padding: 40px 80px;
+position: fixed; bottom: 0; width: 100%; }
+.left-side,.right-side { display: flex; gap: 15px; } 
+.center-spacer { flex: 1; }
+
+/* --- LIBRARY: LEFT SIDE --- */
+.left-side button { padding: 14px 40px; font-weight: bold; font-size: 15px; border: 2px solid #222; background: white;
+border-radius: 8px; width: 200px; height: 50px; cursor: pointer; transition: all 0.2s; text-align: center; display: flex;
+align-items: center; justify-content: center; }
+body.dark-mode.left-side button { border-color: #fff; background: #333; color: #fff; }
+.left-side button:active { background: #8B4513; color: white; transform: scale(0.95); }
+
+/* --- LIBRARY: RIGHT SIDE --- */
+.controls-group { display: flex; align-items: center; gap: 20px; }
+/* Increase and Decrease */
+    .text-size { display: flex; gap: 8px; }
+    .text-size button { width: 50px; height: 50px; font-size: 20px; font-weight: bold; border: 2px solid #222;
+    background: white; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex;
+    align-items: center; justify-content: center; }
+    body.dark-mode.text-size button { border-color: #fff; background: #333; color: #fff; }
+    .text-size button:active { background: #8B4513; color: white; transform: scale(0.95); }
+/* Voice Selection */
+    .voice-speed { display: flex; align-items: center; gap: 8px; }
+    .voice-select { position: relative; border: 2px solid #222; border-radius: 8px; padding: 4px;
+    background: #f5f5f5; display: flex; align-items: center; justify-content: center; }
+    body.dark-mode.voice-select { border-color: #fff; background: #333; }
+    #voiceIconBtn { background: none; border: none; padding: 0; display: flex; }
+    #voiceIconBtn img { width: 40px; height: 40px; display: block; }
+/* Gender Badge */
+   .gender-badge { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center;
+   justify-content: center; font-size: 18px; margin-right: 8px; transition: all 0.3s; }
+   .gender-badge.female { background: #FFC0CB; border: 2px solid #E91E63; }
+   .gender-badge.male { background: #BBDEFB; border: 2px solid #2196F3; }
+   #currentVoiceIcon { margin-right: 4px; }
+/* Voice Popup */
+   .voice-popup { position: absolute; bottom: 55px; left: 0; background: white; border: 2px solid #222;
+   border-radius: 10px; padding: 12px; z-index: 100; width: 200px; }
+   body.dark-mode.voice-popup { background: #333; border-color: #fff; }
+   .voice-popup.hidden { display: none; }
+   .voice-popup h3 { text-align: center; margin-bottom: 10px; font-size: 14px; }
+   .voice-list { padding: 0; display: flex; flex-direction: column; gap: 8px; }
+   .voice-list button { padding: 12px; font-size: 14px; font-weight: bold; border: 2px solid #222; background: white;
+   text-align: left; cursor: pointer; border-radius: 8px; transition: all 0.2s; display: flex; align-items: center; }
+   body.dark-mode.voice-list button { background: #333; color: #fff; border-color: #fff; }
+   .voice-list button:hover { background: #8B4513; color: white; border-color: #8B4513; }
+   body.dark-mode.voice-list button:hover { background: #ffa500; color: #000; border-color: #ffa500; }
+/* Speed Bar */
+   #speedSlider { width: 120px; margin-left: 0; }
+   #speedValue { display: inline-block; width: 40px; text-align: center; font-weight: bold; margin-left: 2px; }
+
+/* ============================================================
+   PAGE 2: COVER
+============================================================ */
+/* ---------- COVER POSTER IMAGE ---------- */
+.poster-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
+
+/* ---------- COVER: BACK BUTTON ---------- */
+.back-btn { position: absolute; top: 25px; left: 25px; font-size: 24px; font-weight: bold; background: rgba(0,0,0,0.2);
+border: none; border-radius: 10px; padding: 8px 18px; cursor: pointer; z-index: 10; color: #333; transition: 0.2s; }
+.back-btn:hover { background: rgba(0,0,0,0.4); color: white; }
+body.dark-mode.back-btn { background: rgba(255,255,255,0.2); color: white; }
+
+/* ---------- COVER: START READING BUTTON ---------- */
+.start-reading { position: absolute; bottom: 40px; right: 40px; padding: 14px 35px; font-size: 16px; font-weight: bold;
+border: none; background: #f2d2b5; color: #000; cursor: pointer; border-radius: 12px; z-index: 10; transition: 0.2s; }
+.start-reading:hover { background: #e6bfa0; transform: scale(1.05); }
+
+/* ============================================================
+   PAGE 3: READERS PAGE
+============================================================ */ 
+/* ------------------------------------------------------------
+    RP: HEADER
+------------------------------------------------------------ */
+.reader-header { display: flex; justify-content: center; align-items: center; padding: 30px 40px;
+background: rgba(223, 221, 221, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid #ddd; position: relative; }
+body.dark-mode .reader-header { background: rgba(30,30,30,0.9); border-bottom: 1px solid #333; }
+.reader-header h2 { font-size: 28px; margin: 0; text-align: center; white-space: nowrap; color: #222; }
+body.dark-mode .reader-header h2 { color: #eee; }
+/* --- HEADER: Back Button --- */
+   #backBtn { position: absolute; left: 40px; top: 50%; transform: translateY(-50%); padding: 10px 20px; font-size: 14px; font-weight: bold;
+   border: 2px solid #222; background: white; color: #222; border-radius: 8px; cursor: pointer; z-index: 2; }
+   body.dark-mode #backBtn { background: #333; color: #fff; border-color: #fff; }
+/* --- HEADER: Tools --- */
+   .reader-tools { position: absolute; right: 40px; top: 50%; transform: translateY(-50%); display: flex;
+   align-items: center; gap: 8px; z-index: 2; }
+/* TOOL BUTTONS */
+   .reader-tool-btn { width: 48px; height: 48px; padding: 0; border: none; outline: none; background: transparent;
+   border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+   transition: transform .25s ease, background .25s ease, box-shadow .25s ease; }
+   .reader-tool-btn img { width: 28px; height: 28px; object-fit: contain; user-select: none;
+   pointer-events: none; transition: transform .25s ease; }
+   .reader-tool-btn:hover { transform: translateY(-2px) scale(1.04); background: rgba(255,255,255,.08);
+   box-shadow: 0 6px 16px rgba(0,0,0,.16); }
+   .reader-tool-btn:hover img { transform: scale(1.05); } 
+   .reader-tool-btn:active { transform: scale(.94); box-shadow: 0 3px 8px rgba(0,0,0,.12); }
+
+/* ------------------------------------------------------------
+    RP: CONTENT
+------------------------------------------------------------ */
+.reader-content { background: #e3e9ea; padding: 40px 30px; max-width: 100%; margin: 0; height: calc(100vh - 160px); overflow-y: auto; font-size: 18px;
+line-height: 1.8; text-align: left; color: #1b1a1a; white-space: pre-line; line-height: 1.8; scrollbar-width: none; -ms-overflow-style: none; }
+.reader-content::-webkit-scrollbar { display: none; }
+body.dark-mode .reader-content { background: #000000; color: #e4e2e2; }
+#TESTTEXT { white-space: pre-line; line-height: 1.8; display: block; }
+body.dark-mode #readerText { color:#e4e2e2!important; }
+
+/* ------------------------------------------------------------
+    RP: FOOTER
+------------------------------------------------------------ */
+.reader-footer { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-between; align-items: center;
+padding: 20px 80px; background: rgba(223, 221, 221, 0.9); backdrop-filter: blur(10px); border-top: 1px solid #ddd; }
+body.dark-mode .reader-footer { background: rgba(30,30,30,0.9); }
+.footer-left,.footer-right { display: flex; gap: 10px; }
+.page-navigation button { padding: 12px 25px; border: 2px solid currentColor; border-radius: 10px; background: transparent;
+font-size: 15px; font-weight: bold; cursor: pointer; }
+.page-indicator { position: absolute; left: 50%; transform: translateX(-50%); font-size: 25px; font-weight: bold; color: #000; }
+.bookmark-confirmation { display: none; position: fixed; top: 80px; right: 30px; padding: 10px 18px;
+border-radius: 8px; z-index: 1000; }
+.bookmark-confirmation.show { display: block; }
+
+/* =========================================
+   BACKGROUND MUSIC
+   ========================================= */
+.background-music-panel { position: absolute; top: 60px; right: 0; width: 210px; padding: 18px; background: rgba(255, 255, 255, 0.92);
+backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.45);
+border-radius: 18px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18); display: none; z-index: 99999; }
+.background-music-panel.show { display: block; }
+
+/* TITLE */
+.background-music-title {text-align: center; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 14px; }
+
+/* MUSIC CHOICES */
+.music-choice {
+    display: block;
+
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 7px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.05);
+
+    font-family: inherit;
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.music-choice:hover {
+    background: rgba(0, 0, 0, 0.10);
+    transform: translateY(-1px);
+}
+
+
+/* CURRENTLY SELECTED */
+
+.music-choice.active {
+    background: rgba(0, 0, 0, 0.14);
+    font-weight: 700;
+}
+
+
+/* STOP */
+
+.stop-music-btn {
+    display: block;
+
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 10px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.07);
+
+    font-family: inherit;
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.stop-music-btn:hover {
+    background: rgba(0, 0, 0, 0.13);
+}
+
+/* DARK MODE */
+
+body.dark-mode .background-music-panel {
+    background: rgba(35, 35, 35, 0.94);
+    color: #ffffff;
+
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.dark-mode .music-choice {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+}
+
+body.dark-mode .music-choice:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+body.dark-mode .music-choice.active {
+    background: rgba(255, 255, 255, 0.17);
+}
+
+body.dark-mode .stop-music-btn {
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+}
+
+body.dark-mode .stop-music-btn:hover {
+    background: rgba(255, 255, 255, 0.13);
+}
+
+/* =========================================
+   READER SEARCH BAR
+   ========================================= */
+
+.reader-search-container {
+    position: fixed;
+
+    /* SAME ROW AS THE READER TOOL BUTTONS */
+    top: 75px;
+    right: 28px;
+
+    width: 285px;
+    height: 45px;
+
+    display: none;
+    align-items: center;
+
+    background: #ffffff;
+
+    border-radius: 25px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
+    overflow: hidden;
+
+    z-index: 99999;
+}
+
+
+/* WHEN OPEN */
+
+.reader-search-container.show {
+    display: flex;
+}
+
+
+/* SEARCH ICON */
+
+.reader-search-icon {
+    width: 27px;
+    height: 27px;
+
+    object-fit: contain;
+
+    margin-left: 12px;
+    margin-right: 7px;
+
+    flex-shrink: 0;
+}
+
+
+/* SEARCH INPUT */
+
+#readerSearchInput {
+    width: 100%;
+    height: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    padding: 0 15px 0 0;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    color: #333333;
+}
+
+#readerSearchInput::placeholder {
+    color: #777777;
+}
+
+/* =========================================
+   NOTES PANEL
+   ========================================= */
+
+.notes-panel {
+    position: fixed;
+
+    top: 75px;
+    right: 28px;
+
+    width: 300px;
+
+    padding: 20px;
+
+    background: #ffffff;
+
+    border-radius: 18px;
+
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+
+    display: none;
+
+    z-index: 99999;
+}
+
+.notes-panel.show {
+    display: block;
+}
+
+
+/* TITLE */
+
+.notes-title {
+    text-align: center;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 15px;
+}
+
+
+/* TEXT AREA */
+
+#notesInput {
+    width: 100%;
+    height: 180px;
+
+    box-sizing: border-box;
+
+    resize: none;
+
+    border: 1px solid #d6d6d6;
+    border-radius: 12px;
+
+    padding: 12px;
+
+    outline: none;
+
+    background: #fafafa;
+
+    color: #333333;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+#notesInput:focus {
+    border-color: #999999;
+}
+
+#notesInput::placeholder {
+    color: #888888;
+}
+
+
+/* SAVE BUTTON */
+
+.save-notes-btn {
+    width: 100%;
+
+    margin-top: 12px;
+
+    padding: 10px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #222222;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.save-notes-btn:hover {
+    opacity: 0.85;
+}
+
+/* =========================================
+   DARK MODE
+   ========================================= */
+
+body.dark-mode .notes-panel {
+    background: #232323;
+
+    color: #ffffff;
+}
+
+body.dark-mode #notesInput {
+    background: #181818;
+
+    color: #ffffff;
+
+    border-color: #444444;
+}
+
+body.dark-mode #notesInput::placeholder {
+    color: #999999;
+}
+
+body.dark-mode .save-notes-btn {
+    background: #ffffff;
+
+    color: #222222;
+}
+
+/* ================================
+   DARK MODE
+ ================================ */
+   body.dark-mode .page-indicator { color: #fff; }
+/* Optional: dark mode button text */
+   body.dark-mode .font-controls button, body.dark-mode .page-navigation button { color: #fff; }
+/* ================================
+   LIGHT MODE
+ ================================ */
+   body.light-mode .page-indicator { color: #000; }
+
+/* --- FOOTER 4 BUTTONS --- */
+.reader-footer button { padding: 12px 30px; font-weight: bold; border: 2px solid #222; background: white;
+border-radius: 8px; cursor: pointer; } 
+body.dark-mode .reader-footer button { background: #333; color: #fff; border-color: #fff; }
+.reader-footer button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ============================================================
+   BUTTON HOVER EFFECTS
+============================================================ */
+.left-side button:hover { transform: scale(1.05); background: #e6bfa0; border-color: #6d4924; }
+.text-size button:hover { transform: scale(1.05); background: #e6bfa0; border-color: #6d4924; }
+.reader-footer button:hover { transform: scale(1.05); background: #e6bfa0; border-color: #6d4924; }
+.book-item:hover { transform: scale(1.02); }
+.voice-list button:hover { transform: scale(1.02); background: #e6bfa0; border-color: #6d4924; }
+body.dark-mode .reader-tool-btn:hover { background:rgba(255,255,255,.08); box-shadow: 0 6px 18px rgba(0,0,0,.30); }
+
+/* ====================== CLICKABLE VOCUB WORDS =========================== */
+.vocab-word { font-weight:600; color:#000; font-weight:600; cursor:pointer; transition: color .20s ease, opacity .20s ease; }
+.vocab-word:hover { opacity:.70; }
+body.dark-mode .vocab-word { color:#ffffff; }
+body.dark-mode .vocab-word:hover { opacity:.75; }
+
+/* ========================== POPUP OVERLAY =============================== */
+.popup-overlay { position:fixed; inset:0; background:rgba(255,255,255,.10); backdrop-filter:blur(2px);
+-webkit-backdrop-filter:blur(5px); opacity:0; visibility:hidden; transition:.15s ease; z-index:99990; }
+.popup-overlay.show { opacity:.90; visibility:visible; }
+
+/* ======================== DICTIONARY POPUP ============================= */
+.dictionary-popup { position:fixed; left:50%; top:60%; transform:translate(-50%,-50%); width:600px; max-width:92%;
+background:#f5ecec; border-radius:24px; padding:40px; display:none; z-index:99999; box-shadow:0 18px 45px rgba(0,0,0,.18);
+text-align:center; border:#000 2px solid; }
+.dictionary-popup.show { display:block; }
+.dictionary-popup h2 { margin:0; font-size:50px; text-transform:uppercase; text-align:center; font-weight:900; letter-spacing:2px; }
+#popupPronunciation { margin-top:3px; margin-bottom:22px; color:#555454; font-style:italic; text-align:center; font-size:18px; }
+.popup-section { margin-top:22px; text-align:center; } 
+.popup-section h4 { margin:5 0 10px; font-size:18px; font-weight:700; }
+.popup-section p { margin:0; line-height:1.5; font-size:17px; }
+#popupSpeakBtn { display:flex; align-items:center; justify-content:center; gap:8px; width:250px; height:50px; margin:35px auto 0;
+background:#ffffff; color:#222; border:2px solid #444; border-radius:14px; font-size:17px; font-weight:600;
+cursor:pointer; transition:all .25s ease; box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+#popupSpeakBtn:hover { transform:translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,.18); }
+#popupSpeakBtn:active { transform:scale(.97); }
+body.dark-mode .popup-overlay { background:rgba(83, 82, 82, 0.18); }
+body.dark-mode .dictionary-popup { background:#232323; color:#ffffff; border:#908f8f 2px solid; }
+body.dark-mode #popupPronunciation { color:#D8D8D8; }
+body.dark-mode #popupSpeakBtn { background:#2d2d2d; color:#efeeee; border:2px solid #a9a8a8; } 
+body.dark-mode #popupSpeakBtn:hover { background:#282828; }
+@keyframes popupShow {
+     from { opacity:0; transform: translate(-50%,20px); }
+     to { opacity:1; transform: translate(-50%,0); } }
+
+/* ==========================================
+   READER SEARCH
+========================================== */
+   .reader-search { position: relative; width: 48px; height: 48px; flex-shrink: 0; }
+/* SEARCH ICON */
+   .reader-search-toggle { position: absolute; right: 0; top: 0; z-index: 3; }
+/* SEARCH BOX */
+   .reader-search-box { position: absolute; right: 0; top: 0; width: 0; height: 48px; overflow: hidden; opacity: 0;
+   display: flex; align-items: center; background: rgba(255,255,255,.96); border-radius: 14px;
+   box-shadow: 0 8px 24px rgba(0,0,0,.14); transition: width .35s ease, opacity .25s ease; z-index: 4; }
+/* OPEN */
+   .reader-search.active { width: 300px; }
+   .reader-search.active .reader-search-box { width: 300px; opacity: 1; }
+/* INPUT */
+   .reader-search-input { flex: 1; min-width: 0; height: 100%; border: none; outline: none; background: transparent;
+   padding: 0 12px 0 18px; font-family: inherit; font-size: 15px; color: #222; }
+   .reader-search-input::placeholder { color: #888; }
+/* CLOSE */
+   .reader-search-close { width: 42px; height: 42px; margin-right: 3px; border: none; outline: none; background: transparent;
+   font-size: 22px; color: #666; cursor: pointer; border-radius: 12px; display: flex; align-items: center;
+   justify-content: center; transition: transform .2s ease, background .2s ease; }
+   .reader-search-close:hover { transform: scale(1.08); background: rgba(0,0,0,.06); }
+/* DARK MODE */
+   body.dark-mode .reader-search-box { background: rgba(35,35,35,.97); box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+   body.dark-mode .reader-search-input { color: #eee; }
+   body.dark-mode .reader-search-input::placeholder { color: #aaa; }
+   body.dark-mode .reader-search-close { color: #ddd; }
+   body.dark-mode .reader-search-close:hover { background: rgba(255,255,255,.08); }
+
+
+/* ============================== MOBILE ============================== */
+@media screen and (max-width: 768px) { html, body{ width:100%; height:100%; overflow:hidden; }
+
+/* ========== LIBRARY : HEADER ========== */
+.title{ position: fixed; top: 0; left: 0; right: 0; height: 80px; display: flex;
+        align-items: center; justify-content: center; font-size: 70px; font-weight: 800; letter-spacing: 2px;
+        padding: 10px 10px; text-align: center; background: rgba(17,17,17,0.7); backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px); z-index: 1000; margin: 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+/* ========== LIBRARY : 4 BOOKS ========== */
+.book-container{ position: absolute; top: 100px; bottom: 160px; left: 0; right: 0; display: grid;
+        grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; padding-bottom: 120px; overflow-y: auto; overflow-x: hidden;
+        -webkit-overflow-scrolling: touch; background: transparent; align-items: start; box-sizing: border-box; }
+.library-grid { padding: 15px; box-sizing: border-box; }
+.book-card { width: calc(50% - 10px); margin-bottom: 20px; }
+.book-item{ display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+        text-align: center; width: 100%; padding: 5px 0; }
+.book-item:first-child{ padding-top: 5px; }
+.book-item:last-child{ padding-bottom: 0; }
+.book-item img{ width: 110px; height: 165px; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        object-fit: cover; flex-shrink: 0; }
+.book-item p{ font-size: 12px; margin-top: 5px; max-width: 150px; line-height: 1; min-height: 32px; 
+        display: flex; align-items: center; justify-content: center; flex-direction: column; padding-bottom: 10px; }
+
+/* ========== LIBRARY : FOOTER ========== */ 
+.controls-wrapper{ position: fixed; bottom: 0; left: 0; right: 0; height: 160px; display: flex; flex-direction: column; 
+        align-items: center; justify-content: space-evenly; gap: 10px; padding: 8px 12px 8px 12px; background: rgba(17,17,17,0.7); 
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000;
+        border-top: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; } 
+.left-side, .right-side{ width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; } 
+.left-side button, .right-side button{ flex: 1; height: 45px; font-size: 13px; padding: 10px 10px; border-radius: 6px; } 
+.controls-group{ width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 5px; } 
+#speedSlider{ width: 100px; flex: 1; max-width: none; } 
+#speedLabel{ min-width: 30px; text-align: center; font-size: 11px; }
+    
+/* ========== READER : HEADER ========== */ 
+.reader-header{ position: relative; display: flex; justify-content: space-between;
+        align-items: center; padding: 25px 10px; gap: 10px; } 
+.reader-header h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+.reader-header h2{ font-size: 20px; text-align: center; flex: 1; margin-left: 20px; } 
+#readAloudBtn{ padding: 10px; min-width: 50px; margin-right: -18px; } 
+
+/* HIDE "READ ALOUD" TEXT */
+#readAloudBtn .btn-text{ display: none; }
+
+/* Footer ng readers page */
+.reader-footer { display: flex; justify-content: space-between; padding: 20px; gap: 5px; }
+.reader-footer button { flex: 1; padding: 10px 10px; font-size: 14px; }
+
+/* Para sa A- A+ Prev Next sa baba ng reader */
+.reader-controls { position: fixed; bottom: 0; left: 0; right: 0; padding: 10px 15px; display: flex; gap: 8px; 
+  background: white; box-sizing: border-box; border-top: 1px solid #ddd; }
+
+.reader-controls button { flex: 1; padding: 12px 5px; font-size: 14px; }  
+
+/* ICON BUTTONS SA GITNA */
+.font-controls{ display: flex; gap: 8px; background-color: #8B4513; color: white; transition: background-color 0.1s ease; } }
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+
+    .notes-panel {
+        width: 100%;
+        max-width: 100%;
+    }
+
+}
+
+/* EXTRA SMALL PHONES */
+@media screen and (max-width: 480px) {
+    .title{ font-size: 34px; height: 70px; }
+    .book-container{ top: 70px; bottom: 140px; gap: 8px; padding: 10px; }
+    .book-item img{ max-height: 60%; }
+    .book-item p{ font-size: 11px; min-height: 35px; } } 

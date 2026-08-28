@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRIS Library</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="images/icon.jpg">
+<meta name="theme-color" content="#8B4513">
+<script>
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('service-worker.js'); }
+</script>
+</head>
+<body>
+
+<! ============================================================
+   PAGE 1: LIBRARY
+============================================================ > 
+<div id="library-page" class="page active">
+  <div class="library-bg"></div>
+  <div class="bg-overlay"></div>
+  <h1 class="title">IRIS LIBRARY</h1>
+
+  <!-- SEARCH BOOK -->
+<div class="library-search">
+  <button id="searchToggleBtn" class="search-toggle">
+    <img
+        src="images/search.png"
+        alt="Search"
+        class="search-icon-img"
+        draggable="false">
+</button>
+  <div class="search-box">
+    <input
+      type="text"
+      id="bookSearch"
+      placeholder="Search here..."
+      autocomplete="off">
+  </div>
+</div>
+
+  <!-- BOOKS -->
+  <div class="book-container">
+    <div class="book-item" data-book="emily">
+      <img src="images/emily.jpg" alt="A Rose for Emily">
+      <p>A Rose for Emily<br><span>by William Faulkner</span></p>
+    </div>
+    <div class="book-item" data-book="stars">
+      <img src="images/stars.jpg" alt="The Dead Stars">
+      <p>The Dead Stars<br><span>by Paz Marquez- Benitez</span></p>
+    </div>
+    <div class="book-item" data-book="hour">
+      <img src="images/hour.jpg" alt="The Story of an Hour">
+      <p>The Story of an Hour<br><span>by Kate Chopin</span></p>
+    </div>
+    <div class="book-item" data-book="magi">
+      <img src="images/magi.jpg" alt="The Gift of Magi">
+      <p>The Gift of Magi<br><span>by O. Henry</span></p>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls-wrapper">
+    <div class="left-side">
+      <button id="darkModeBtn">DARKMODE</button>
+      <button id="fullscreenBtn">FULLSCREEN</button>
+    </div>
+    <div class="center-spacer"></div>
+    <div class="right-side">
+      <div class="controls-group">
+        <div class="text-size">
+          <button id="textDecrease">-</button>
+          <button id="textIncrease">+</button>
+        </div>
+        <div class="voice-speed">
+          <div class="voice-select">
+            <button id="voiceIconBtn">
+              <img src="images/voice.png" alt="Voice">
+            </button>
+            <div id="voicePopup" class="voice-popup hidden">
+              <h3>Select Voice</h3>
+              <div class="voice-list">
+                <button data-gender="female"><span class="gender-badge female">👩</span> Female</button>
+                <button data-gender="male"><span class="gender-badge male">👨</span> Male</button>
+              </div>
+            </div>
+          </div>
+          <span id="currentVoiceIcon" class="gender-badge female">👩</span>
+          <input type="range" id="speedSlider" min="0.5" max="1" step="0.25" value="1">
+          <span id="speedValue">1x</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<! ============================================================
+   PAGE 2: COVERS / POSTERS
+============================================================ > 
+<! ------------------------------------------------------------
+    2A: EMILY POSTER
+------------------------------------------------------------ >
+<div id="emily-poster" class="page">
+  <button class="back-btn">&lt;</button>
+  <img src="images/emily-cover.jpg" class="poster-img" alt="A Rose for Emily">
+  <button class="start-reading" data-book="emily">start reading</button>
+</div>
+<! ------------------------------------------------------------
+    2B: STARS POSTER
+------------------------------------------------------------ >
+<div id="stars-poster" class="page">
+  <button class="back-btn">&lt;</button>
+  <img src="images/stars-cover.jpg" class="poster-img" alt="The Dead Stars">
+  <button class="start-reading" data-book="stars">start reading</button>
+</div>
+<! ------------------------------------------------------------
+    2C: HOUR POSTER
+------------------------------------------------------------ >
+<div id="hour-poster" class="page">
+  <button class="back-btn">&lt;</button>
+  <img src="images/hour-cover.jpg" class="poster-img" alt="The Story of an Hour">
+  <button class="start-reading" data-book="hour">start reading</button>
+</div>
+<! ------------------------------------------------------------
+    2D: MAGI POSTER
+------------------------------------------------------------ >
+<div id="magi-poster" class="page">
+  <button class="back-btn">&lt;</button>
+  <img src="images/magi-cover.jpg" class="poster-img" alt="The Gift of the Magi">
+  <button class="start-reading" data-book="magi">start reading</button>
+</div>
+
+<! ============================================================
+   PAGE 3: READERS PAGE
+============================================================ >
+<!-- BACKGROUND MUSIC PANEL -->
+  <div id="backgroundMusicPanel" class="background-music-panel">
+    <div class="background-music-title">
+        BACKGROUND MUSIC
+    </div>
+      <button class="music-choice" data-music="i.mp3">i</button>
+      <button class="music-choice" data-music="ii.mp3">ii</button>
+      <button class="music-choice" data-music="iii.mp3">iii</button>
+      <button class="music-choice" data-music="iv.mp3">iv</button>
+    <button id="stopBackgroundMusic" class="stop-music-btn">
+        🔇 Stop
+    </button>
+  </div>
+<!-- BACKGROUND MUSIC AUDIO -->
+<audio id="backgroundMusic" loop></audio>
+<!-- Reader Search Bar -->
+<div id="readerSearchContainer" class="reader-search-container">
+    <img
+        src="images/rp_search.png"
+        alt="Search"
+        class="reader-search-icon" >
+    <input
+        type="text"
+        id="readerSearchInput"
+        placeholder="Search here..."
+        autocomplete="off" >
+    </div>
+<div id="notesPanel" class="notes-panel">
+    <div class="notes-title">MY NOTES</div>
+    <textarea
+        id="notesInput"
+        placeholder="Write your notes here..."
+    ></textarea>
+    <button id="saveNotesBtn" class="save-notes-btn">
+        Save
+    </button>
+</div>
+
+<! ---------- 3A: PAGE FOR EMILY ---------- >
+<div id="emily-reader" class="page">
+ <div class="reader-header">
+   <button class="back-btn reader-back" onclick="goHome()">&lt;</button>
+    <h2>A Rose for Emily</h2>
+     <div class="reader-tools">
+       <button id="readerNotesBtn" class="reader-tool-btn">
+       <img src="images/rp_notes.png" alt="Notes">
+       </button>
+         <button id="readerBookmarkBtn" class="reader-tool-btn">
+         <img src="images/rp_bookmark.png" alt="Bookmark">
+         </button>
+        <button id="readAloudBtn" class="reader-tool-btn">
+        <img src="images/rp_speak.png" alt="Read Aloud">
+        </button>
+       <button id="backgroundSoundBtn" class="reader-tool-btn">
+       <img src="images/rp_music.png" alt="Background Sound">
+       </button>
+      <button id="readerSearchBtn" class="reader-tool-btn">
+     <img src="images/rp_search.png" alt="Search">
+    </button>
+  </div>
+</div>
+<div class="reader-content" id="readerTextEmily"></div>
+ <div class="reader-footer">
+  <div class="footer-left">
+  <button id="decreaseFontBtnEmily">A-</button> 
+ <button id="increaseFontBtnEmily">A+</button> 
+</div>
+<!-- PAGE INDICATOR -->
+    <div class="page-indicator" id="pageIndicatorEmily">
+        1 / 14
+       </div>
+<div class="footer-right">
+ <button id="prevPageBtnEmily">← Prev</button>
+  <button id="nextPageBtnEmily">Next →</button>
+ </div> </div>
+</div>
+
+<! ---------- 3B: PAGE FOR STARS ---------- >
+<div id="stars-reader" class="page">
+ <div class="reader-header">
+   <button class="back-btn reader-back" onclick="goHome()">&lt;</button>
+    <h2>The Dead Stars</h2>
+     <div class="reader-tools">
+       <button id="readerNotesBtn" class="reader-tool-btn">
+       <img src="images/rp_notes.png" alt="Notes">
+       </button>
+         <button id="readerBookmarkBtn" class="reader-tool-btn">
+         <img src="images/rp_bookmark.png" alt="Bookmark">
+         </button>
+        <button id="readAloudBtn" class="reader-tool-btn">
+        <img src="images/rp_speak.png" alt="Read Aloud">
+        </button>
+       <button id="backgroundSoundBtn" class="reader-tool-btn">
+       <img src="images/rp_music.png" alt="Background Sound">
+       </button>
+      <button id="readerSearchBtn" class="reader-tool-btn">
+     <img src="images/rp_search.png" alt="Search">
+    </button>
+  </div>
+</div>
+<div class="reader-content" id="readerTextStars"></div>
+ <div class="reader-footer">
+  <div class="footer-left">
+  <button id="decreaseFontBtnStars">A-</button>
+ <button id="increaseFontBtnStars">A+</button>
+</div>
+<!-- PAGE INDICATOR -->
+    <div class="page-indicator" id="pageIndicatorStars">
+        1 / 2
+    </div>
+<div class="footer-right">
+ <button id="prevPageBtnStars">← Prev</button>
+  <button id="nextPageBtnStars">Next →</button>
+  </div>
+ </div>
+</div>
+
+<! ---------- 3C: PAGE FOR HOUR ---------- >
+<div id="hour-reader" class="page">
+ <div class="reader-header">
+   <button class="back-btn reader-back" onclick="goHome()">&lt;</button>
+    <h2>The Story of an Hour</h2>
+     <div class="reader-tools">
+       <button id="readerNotesBtn" class="reader-tool-btn">
+       <img src="images/rp_notes.png" alt="Notes">
+       </button>
+         <button id="readerBookmarkBtn" class="reader-tool-btn">
+         <img src="images/rp_bookmark.png" alt="Bookmark">
+         </button>
+        <button id="readAloudBtn" class="reader-tool-btn">
+        <img src="images/rp_speak.png" alt="Read Aloud">
+        </button>
+       <button id="backgroundSoundBtn" class="reader-tool-btn">
+       <img src="images/rp_music.png" alt="Background Sound">
+       </button>
+      <button id="readerSearchBtn" class="reader-tool-btn">
+     <img src="images/rp_search.png" alt="Search">
+    </button>
+  </div>
+</div>
+<div class="reader-content" id="readerTextHour"></div>
+ <div class="reader-footer">
+  <div class="footer-left">
+  <button id="decreaseFontBtnHour">A-</button>
+ <button id="increaseFontBtnHour">A+</button>
+</div>
+<!-- PAGE INDICATOR -->
+    <div class="page-indicator" id="pageIndicatorHour">
+        1 / 4
+    </div>
+<div class="footer-right">
+ <button id="prevPageBtnHour">← Prev</button>
+  <button id="nextPageBtnHour">Next →</button>
+  </div>
+ </div>
+</div>
+
+<! ---------- 3D: PAGE FOR MAGI ---------- >
+<div id="magi-reader" class="page">
+ <div class="reader-header">
+   <button class="back-btn reader-back" onclick="goHome()">&lt;</button>
+    <h2>The Gift of the Magi</h2>
+     <div class="reader-tools">
+       <button id="readerNotesBtn" class="reader-tool-btn">
+       <img src="images/rp_notes.png" alt="Notes">
+       </button>
+         <button id="readerBookmarkBtn" class="reader-tool-btn">
+         <img src="images/rp_bookmark.png" alt="Bookmark">
+         </button>
+        <button id="readAloudBtn" class="reader-tool-btn">
+        <img src="images/rp_speak.png" alt="Read Aloud">
+        </button>
+       <button id="backgroundSoundBtn" class="reader-tool-btn">
+       <img src="images/rp_music.png" alt="Background Sound">
+       </button>
+      <button id="readerSearchBtn" class="reader-tool-btn">
+     <img src="images/rp_search.png" alt="Search">
+    </button>
+  </div>
+</div>
+<div class="reader-content" id="readerTextMagi"></div>
+ <div class="reader-footer">
+  <div class="footer-left">
+  <button id="decreaseFontBtnMagi">A-</button>
+ <button id="increaseFontBtnMagi">A+</button>
+</div>
+<!-- PAGE INDICATOR -->
+    <div class="page-indicator" id="pageIndicatorMagi">
+        1 / 2
+    </div>
+<div class="footer-right">
+ <button id="prevPageBtnMagi">← Prev</button>
+  <button id="nextPageBtnMagi">Next →</button>
+  </div>
+ </div>
+</div>
+</div>
+
+<!-- ===============================
+     DICTIONARY POPUP
+================================ -->
+<div id="popupOverlay" class="popup-overlay"></div>
+<div id="dictionaryPopup" class="dictionary-popup">
+  <h2 id="popupWord"></h2>
+    <p id="popupPronunciation"></p>
+
+      <div class="popup-section">
+        <h4>Part of Speech</h4>
+        <p id="popupPOS"></p>
+      </div>
+
+      <div class="popup-section">
+        <h4>Meaning</h4>
+        <p id="popupMeaning"></p>
+      </div>
+
+      <div class="popup-section">
+        <h4>Tagalog</h4>
+        <p id="popupTagalog"></p>
+      </div>
+
+    <button id="popupSpeakBtn">
+    <span>🔊</span>
+    <span>Pronunciation</span>
+</button>
+</div>
+</div>
+
+<div class="reader-search">
+    <button class="reader-tool-btn reader-search-toggle" type="button">
+        <img src="rp_search.png" alt="Search">
+    </button>
+    <div class="reader-search-box">
+        <input
+            type="text"
+            class="reader-search-input"
+            placeholder="Search..."
+        >
+        <button
+            class="reader-search-close"
+            type="button"
+        >
+            ×
+        </button>
+    </div>
+</div>
+
+<div id="bookmarkConfirmation" class="bookmark-confirmation">
+    🔖 Page bookmarked!
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
